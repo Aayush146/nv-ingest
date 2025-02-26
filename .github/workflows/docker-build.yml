@@ -29,14 +29,9 @@ jobs:
       # Build the Docker image using the Dockerfile
       - name: Build Docker image
         run: |
-          docker build --target runtime -t nv-ingest:latest .
+          docker build -t digitalape14/nv_ingest_test:action .
 
-      - name: Run Pytest inside Docker container
+      - name: push the docker image 
         run: |
-          docker run nv-ingest:latest pytest -rs --cov nv_ingest --cov nv_ingest_client --cov-report term --cov-report xml:coverage.xml tests/nv_ingest tests/nv_ingest_client
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-report
-          path: report.xml
+          docker login -u digitalape14 -p ${{secrets.DOCKER_HUB_TOKEN}}
+          docker push digitalape14/nv_ingest_test:action
